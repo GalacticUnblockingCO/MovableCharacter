@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Movable Character with Thumbstick and Animations</title>
+<title>Movable Character with Thumbstick and Animations (Mobile Friendly)</title>
 <style>
     #character {
         width: 50px;
@@ -21,6 +21,7 @@
         position: absolute;
         bottom: 20px;
         right: 20px;
+        touch-action: none;
     }
 
     #thumbstick-knob {
@@ -49,13 +50,14 @@
 
         let isDragging = false;
 
-        thumbstick.addEventListener("mousedown", startDragging);
-        document.addEventListener("mouseup", stopDragging);
-        document.addEventListener("mousemove", moveKnob);
+        thumbstick.addEventListener("touchstart", startDragging);
+        document.addEventListener("touchend", stopDragging);
+        document.addEventListener("touchmove", moveKnob);
 
         function startDragging(e) {
+            e.preventDefault();
             isDragging = true;
-            moveKnob(e);
+            moveKnob(e.touches[0]);
         }
 
         function stopDragging() {
