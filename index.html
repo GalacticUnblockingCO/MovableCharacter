@@ -89,14 +89,12 @@
 
                 // Move character based on thumbstick position
                 const speed = 5;
-                const characterX = character.offsetLeft + character.offsetWidth / 2;
-                const characterY = character.offsetTop + character.offsetHeight / 2;
                 const angle = Math.atan2(deltaY, deltaX);
-                const newX = characterX + Math.cos(angle) * speed;
-                const newY = characterY + Math.sin(angle) * speed;
+                const newX = character.offsetLeft + Math.cos(angle) * speed;
+                const newY = character.offsetTop + Math.sin(angle) * speed;
 
                 character.style.transition = "transform 0.2s ease-in-out";
-                character.style.transform = `translate(${newX - character.offsetWidth / 2}px, ${newY - character.offsetHeight / 2}px)`;
+                character.style.transform = `translate(${newX}px, ${newY}px)`;
             }
         }
     });
