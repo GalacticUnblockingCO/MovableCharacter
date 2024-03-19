@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movable Character with Thumbstick and Animations</title>
+<style>
+    #character {
+        width: 50px;
+        height: 50px;
+        background-color: red;
+        position: absolute;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    #thumbstick {
+        width: 100px;
+        height: 100px;
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 50%;
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+    }
+
+    #thumbstick-knob {
+        width: 50px;
+        height: 50px;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        position: absolute;
+        top: 25px;
+        left: 25px;
+    }
+</style>
+</head>
+<body>
+
+<div id="character"></div>
+<div id="thumbstick">
+    <div id="thumbstick-knob"></div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const character = document.getElementById("character");
+        const thumbstick = document.getElementById("thumbstick");
+        const thumbstickKnob = document.getElementById("thumbstick-knob");
+
+        let isDragging = false;
+
+        thumbstick.addEventListener("mousedown", startDragging);
+        document.addEventListener("mouseup", stopDragging);
+        document.addEventListener("mousemove", moveKnob);
+
+        function startDragging(e) {
+            isDragging = true;
+            moveKnob(e);
+        }
+
+        function stopDragging() {
+            isDragging = false;
+            thumbstickKnob.style.transition = "all 0.3s ease";
+            thumbstickKnob.style.left = "25px";
+            thumbstickKnob.style.top = "25px";
+        }
+
+        function moveKnob(e) {
+            if (isDragging) {
+                const rect = thumbstick.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                let deltaX = e.clientX - centerX;
+                let deltaY = e.clientY - centerY;
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                const maxDistance = Math.min(rect.width / 2, rect.height / 2);
+
+                if (distance > maxDistance) {
+                    const angle = Math.atan2(deltaY, deltaX);
+                    deltaX = Math.cos(angle) * maxDistance;
+                    deltaY = Math.sin(angle) * maxDistance;
+                }
+
+                thumbstickKnob.style.transition = "none";
+                thumbstickKnob.style.left = (centerX + deltaX - 25) + "px";
+                thumbstickKnob.style.top = (centerY + deltaY - 25) + "px";
+
+                // Move character based on thumbstick position
+                const speed = 5;
+                const characterX = character.offsetLeft + character.offsetWidth / 2;
+                const characterY = character.offsetTop + character.offsetHeight / 2;
+                const angle = Math.atan2(deltaY, deltaX);
+                const newX = characterX + Math.cos(angle) * speed;
+                const newY = characterY + Math.sin(angle) * speed;
+
+                character.style.transition = "transform 0.2s ease-in-out";
+                character.style.transform = `translate(${newX - character.offsetWidth / 2}px, ${newY - character.offsetHeight / 2}px)`;
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
